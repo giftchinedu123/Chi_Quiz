@@ -1,8 +1,4 @@
-interface LoaderProps {
-  message?: string;
-}
-
-export function Loader({ message = 'Loading questions...' }: LoaderProps) {
+export function Loader({ message = 'Loading questions...' }) {
   return (
     <div className="loader-box" role="status" aria-live="polite">
       <div className="spinner" aria-hidden="true" />

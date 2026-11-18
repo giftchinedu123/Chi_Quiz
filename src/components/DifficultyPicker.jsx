@@ -1,17 +1,6 @@
-import type { DifficultyOption } from '../types/quiz';
 import { DIFFICULTIES } from '../utils/constants';
 
-interface DifficultyPickerProps {
-  selected: DifficultyOption;
-  onSelect: (difficulty: DifficultyOption) => void;
-  disabled?: boolean;
-}
-
-export function DifficultyPicker({
-  selected,
-  onSelect,
-  disabled = false,
-}: DifficultyPickerProps) {
+export function DifficultyPicker({ selected, onSelect, disabled = false }) {
   return (
     <div className="setup-field">
       <span className="field-label" id="difficulty-picker-label">

@@ -1,28 +1,19 @@
-import { useState, type FormEvent } from 'react';
-import type { CustomQuiz, CustomQuizQuestionInput } from '../types/quiz';
+import { useState } from 'react';
 import { MIN_CUSTOM_QUIZ_QUESTIONS } from '../utils/constants';
 
-interface QuizFormProps {
-  onSaveQuiz: (quiz: CustomQuiz) => void;
-}
+const OPTION_INDICES = [0, 1, 2, 3];
 
-type OptionIndex = 0 | 1 | 2 | 3;
-
-const EMPTY_OPTIONS: [string, string, string, string] = ['', '', '', ''];
-
-export function QuizForm({ onSaveQuiz }: QuizFormProps) {
+export function QuizForm({ onSaveQuiz }) {
   const [title, setTitle] = useState('');
-  const [questions, setQuestions] = useState<CustomQuizQuestionInput[]>([]);
+  const [questions, setQuestions] = useState([]);
 
   const [questionText, setQuestionText] = useState('');
-  const [options, setOptions] = useState<[string, string, string, string]>([
-    ...EMPTY_OPTIONS,
-  ] as [string, string, string, string]);
-  const [correctIndex, setCorrectIndex] = useState<OptionIndex | null>(null);
-  const [editingId, setEditingId] = useState<string | null>(null);
+  const [options, setOptions] = useState(['', '', '', '']);
+  const [correctIndex, setCorrectIndex] = useState(null);
+  const [editingId, setEditingId] = useState(null);
 
-  const [editorError, setEditorError] = useState<string | null>(null);
-  const [saveError, setSaveError] = useState<string | null>(null);
+  const [editorError, setEditorError] = useState(null);
+  const [saveError, setSaveError] = useState(null);
 
   const resetEditor = () => {
     setQuestionText('');
@@ -32,25 +23,20 @@ export function QuizForm({ onSaveQuiz }: QuizFormProps) {
     setEditorError(null);
   };
 
-  const handleOptionChange = (index: OptionIndex, value: string) => {
+  const handleOptionChange = (index, value) => {
     setOptions((prev) => {
-      const next = [...prev] as [string, string, string, string];
+      const next = [...prev];
       next[index] = value;
       return next;
     });
     if (editorError) setEditorError(null);
   };
 
-  const handleAddOrUpdateQuestion = (e: FormEvent) => {
+  const handleAddOrUpdateQuestion = (e) => {
     e.preventDefault();
 
     const trimmedQuestion = questionText.trim();
-    const trimmedOptions = options.map((opt) => opt.trim()) as [
-      string,
-      string,
-      string,
-      string,
-    ];
+    const trimmedOptions = options.map((opt) => opt.trim());
 
     if (!trimmedQuestion) {
       setEditorError('Please enter the question text.');
@@ -89,7 +75,7 @@ export function QuizForm({ onSaveQuiz }: QuizFormProps) {
         )
       );
     } else {
-      const newQuestion: CustomQuizQuestionInput = {
+      const newQuestion = {
         id: `custom-q-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
         question: trimmedQuestion,
         options: trimmedOptions,
@@ -102,15 +88,15 @@ export function QuizForm({ onSaveQuiz }: QuizFormProps) {
     resetEditor();
   };
 
-  const handleEditQuestion = (item: CustomQuizQuestionInput) => {
+  const handleEditQuestion = (item) => {
     setEditingId(item.id);
     setQuestionText(item.question);
-    setOptions([...item.options] as [string, string, string, string]);
+    setOptions([...item.options]);
     setCorrectIndex(item.correctIndex);
     setEditorError(null);
   };
 
-  const handleDeleteQuestion = (id: string) => {
+  const handleDeleteQuestion = (id) => {
     setQuestions((prev) => prev.filter((q) => q.id !== id));
     if (editingId === id) {
       resetEditor();
@@ -130,7 +116,7 @@ export function QuizForm({ onSaveQuiz }: QuizFormProps) {
       return;
     }
 
-    const newQuiz: CustomQuiz = {
+    const newQuiz = {
       id: `quiz-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
       title: trimmedTitle,
       createdAt: Date.now(),
@@ -209,7 +195,7 @@ export function QuizForm({ onSaveQuiz }: QuizFormProps) {
             role="radiogroup"
             aria-labelledby="options-editor-label"
           >
-            {([0, 1, 2, 3] as OptionIndex[]).map((idx) => {
+            {OPTION_INDICES.map((idx) => {
               const isCorrect = correctIndex === idx;
               return (
                 <div

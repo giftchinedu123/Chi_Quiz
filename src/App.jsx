@@ -1,8 +1,8 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import { Builder } from './pages/Builder';
-import { Landing } from './pages/Landing';
-import { NotFound } from './pages/NotFound';
-import { Quiz } from './pages/Quiz';
+import { Builder } from './pages/Builder.jsx';
+import { Landing } from './pages/Landing.jsx';
+import { NotFound } from './pages/NotFound.jsx';
+import { Quiz } from './pages/Quiz.jsx';
 
 export default function App() {
   return (

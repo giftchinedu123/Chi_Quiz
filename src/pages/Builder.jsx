@@ -1,21 +1,20 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { QuizForm } from '../components/QuizForm';
-import { Toast } from '../components/Toast';
+import { QuizForm } from '../components/QuizForm.jsx';
+import { Toast } from '../components/Toast.jsx';
 import { useLocalStorage } from '../hooks/useLocalStorage';
-import type { CustomQuiz } from '../types/quiz';
 import { CUSTOM_QUIZZES_STORAGE_KEY } from '../utils/constants';
 
 export function Builder() {
   const navigate = useNavigate();
-  const [customQuizzes, setCustomQuizzes] = useLocalStorage<CustomQuiz[]>(
+  const [customQuizzes, setCustomQuizzes] = useLocalStorage(
     CUSTOM_QUIZZES_STORAGE_KEY,
     []
   );
-  const [toastMessage, setToastMessage] = useState<string | null>(null);
-  const toastTimerRef = useRef<number | null>(null);
+  const [toastMessage, setToastMessage] = useState(null);
+  const toastTimerRef = useRef(null);
 
-  const showToast = useCallback((message: string) => {
+  const showToast = useCallback((message) => {
     setToastMessage(message);
     if (toastTimerRef.current !== null) {
       window.clearTimeout(toastTimerRef.current);
@@ -34,17 +33,17 @@ export function Builder() {
     };
   }, []);
 
-  const handleSaveQuiz = (quiz: CustomQuiz) => {
+  const handleSaveQuiz = (quiz) => {
     setCustomQuizzes((prev) => [quiz, ...prev]);
     showToast('Quiz saved!');
   };
 
-  const handleDeleteQuiz = (id: string) => {
+  const handleDeleteQuiz = (id) => {
     setCustomQuizzes((prev) => prev.filter((q) => q.id !== id));
     showToast('Quiz deleted');
   };
 
-  const handlePlayQuiz = (id: string) => {
+  const handlePlayQuiz = (id) => {
     navigate('/quiz', { state: { customQuizId: id } });
   };
 

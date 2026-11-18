@@ -1,28 +1,6 @@
-import type {
-  CustomQuiz,
-  DifficultyOption,
-  QuizAnswerRecord,
-  QuizErrorInfo,
-  QuizQuestion,
-  QuizState,
-} from '../types/quiz';
 import { shuffle } from '../utils/shuffle';
 
-export type QuizAction =
-  | { type: 'SET_CATEGORY'; payload: number | null }
-  | { type: 'SET_DIFFICULTY'; payload: DifficultyOption }
-  | { type: 'START' }
-  | { type: 'START_CUSTOM'; payload: CustomQuiz }
-  | { type: 'QUESTIONS_LOADED'; payload: QuizQuestion[] }
-  | { type: 'LOAD_FAILED'; payload: QuizErrorInfo }
-  | { type: 'ANSWER'; payload: { selectedOption: string } }
-  | { type: 'TIME_UP' }
-  | { type: 'NEXT' }
-  | { type: 'FINISH' }
-  | { type: 'RETRY_WRONG' }
-  | { type: 'RESET' };
-
-export const initialQuizState: QuizState = {
+export const initialQuizState = {
   status: 'setup',
   categoryId: null,
   difficulty: 'any',
@@ -34,8 +12,8 @@ export const initialQuizState: QuizState = {
   error: null,
 };
 
-function buildCustomQuestions(customQuiz: CustomQuiz): QuizQuestion[] {
-  const mapped: QuizQuestion[] = customQuiz.questions.map((item) => {
+function buildCustomQuestions(customQuiz) {
+  const mapped = customQuiz.questions.map((item) => {
     const correct = item.options[item.correctIndex];
     return {
       id: item.id,
@@ -49,7 +27,7 @@ function buildCustomQuestions(customQuiz: CustomQuiz): QuizQuestion[] {
   return shuffle(mapped);
 }
 
-export function quizReducer(state: QuizState, action: QuizAction): QuizState {
+export function quizReducer(state, action) {
   switch (action.type) {
     case 'SET_CATEGORY': {
       if (state.status !== 'setup') return state;
@@ -130,7 +108,6 @@ export function quizReducer(state: QuizState, action: QuizAction): QuizState {
     }
 
     case 'ANSWER': {
-      // Guard against answering outside the active question state or answering twice
       if (state.status !== 'question') return state;
       const currentQuestion = state.questions[state.currentIndex];
       if (!currentQuestion) return state;
@@ -139,7 +116,7 @@ export function quizReducer(state: QuizState, action: QuizAction): QuizState {
       const selectedOption = action.payload.selectedOption;
       const isCorrect = selectedOption === currentQuestion.correct;
 
-      const record: QuizAnswerRecord = {
+      const record = {
         questionId: currentQuestion.id,
         question: currentQuestion.question,
         selectedOption,
@@ -158,13 +135,12 @@ export function quizReducer(state: QuizState, action: QuizAction): QuizState {
     }
 
     case 'TIME_UP': {
-      // Guard against timing out outside the active question state or double-recording
       if (state.status !== 'question') return state;
       const currentQuestion = state.questions[state.currentIndex];
       if (!currentQuestion) return state;
       if (state.answers.length > state.currentIndex) return state;
 
-      const record: QuizAnswerRecord = {
+      const record = {
         questionId: currentQuestion.id,
         question: currentQuestion.question,
         selectedOption: null,

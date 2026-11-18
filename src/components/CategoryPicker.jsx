@@ -1,17 +1,6 @@
-import type { CategoryOption } from '../types/quiz';
 import { CATEGORIES } from '../utils/constants';
 
-interface CategoryPickerProps {
-  selectedId: number | null;
-  onSelect: (id: number | null) => void;
-  disabled?: boolean;
-}
-
-export function CategoryPicker({
-  selectedId,
-  onSelect,
-  disabled = false,
-}: CategoryPickerProps) {
+export function CategoryPicker({ selectedId, onSelect, disabled = false }) {
   return (
     <div className="setup-field">
       <span className="field-label" id="category-picker-label">
@@ -22,7 +11,7 @@ export function CategoryPicker({
         role="group"
         aria-labelledby="category-picker-label"
       >
-        {CATEGORIES.map((category: CategoryOption) => {
+        {CATEGORIES.map((category) => {
           const isActive = selectedId === category.id;
           return (
             <button

@@ -1,19 +1,9 @@
-interface TimerRingProps {
-  secondsLeft: number;
-  progress: number;
-  isRunning: boolean;
-}
-
 const RING_SIZE = 52;
 const STROKE_WIDTH = 3.5;
 const RADIUS = (RING_SIZE - STROKE_WIDTH) / 2;
 const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
 
-export function TimerRing({
-  secondsLeft,
-  progress,
-  isRunning,
-}: TimerRingProps) {
+export function TimerRing({ secondsLeft, progress, isRunning }) {
   const clamped = Math.max(0, Math.min(1, progress));
   const strokeDashoffset = CIRCUMFERENCE * (1 - clamped);
   const isUrgent = isRunning && secondsLeft <= 3 && secondsLeft > 0;

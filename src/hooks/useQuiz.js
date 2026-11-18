@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useReducer, useRef } from 'react';
 import { initialQuizState, quizReducer } from '../reducers/quizReducer';
-import type { CustomQuiz, DifficultyOption } from '../types/quiz';
 import {
   FEEDBACK_AUTO_ADVANCE_MS,
   QUESTION_DURATION_MS,
@@ -11,7 +10,7 @@ import { useTriviaQuestions } from './useTriviaQuestions';
 export function useQuiz() {
   const [state, dispatch] = useReducer(quizReducer, initialQuizState);
   const { loadQuestions, cancel } = useTriviaQuestions();
-  const autoAdvanceTimerRef = useRef<number | null>(null);
+  const autoAdvanceTimerRef = useRef(null);
   const runCounterRef = useRef(0);
 
   const clearAutoAdvance = useCallback(() => {
@@ -38,7 +37,6 @@ export function useQuiz() {
     onExpire: handleTimeUp,
   });
 
-  // Auto-advance after feedback delay; cleaned up on manual advance, quit, or unmount
   useEffect(() => {
     if (state.status !== 'feedback') {
       clearAutoAdvance();
@@ -55,11 +53,11 @@ export function useQuiz() {
     };
   }, [state.status, state.currentIndex, isLastQuestion, clearAutoAdvance]);
 
-  const selectCategory = useCallback((categoryId: number | null) => {
+  const selectCategory = useCallback((categoryId) => {
     dispatch({ type: 'SET_CATEGORY', payload: categoryId });
   }, []);
 
-  const selectDifficulty = useCallback((difficulty: DifficultyOption) => {
+  const selectDifficulty = useCallback((difficulty) => {
     dispatch({ type: 'SET_DIFFICULTY', payload: difficulty });
   }, []);
 
@@ -79,7 +77,7 @@ export function useQuiz() {
   }, [clearAutoAdvance, loadQuestions, state.categoryId, state.difficulty]);
 
   const startCustomQuiz = useCallback(
-    (customQuiz: CustomQuiz) => {
+    (customQuiz) => {
       cancel();
       clearAutoAdvance();
       runCounterRef.current += 1;
@@ -88,7 +86,7 @@ export function useQuiz() {
     [cancel, clearAutoAdvance]
   );
 
-  const submitAnswer = useCallback((selectedOption: string) => {
+  const submitAnswer = useCallback((selectedOption) => {
     dispatch({ type: 'ANSWER', payload: { selectedOption } });
   }, []);
 

@@ -1,29 +1,18 @@
 import { useEffect, useRef, useState } from 'react';
-import type { QuizAnswerRecord } from '../types/quiz';
-
-interface ResultsSummaryProps {
-  answers: QuizAnswerRecord[];
-  categoryLabel: string;
-  difficultyLabel: string;
-  customQuizTitle: string | null;
-  onPlayAgain: () => void;
-  onRetryWrong: () => void;
-  onNotify: (message: string) => void;
-}
 
 const SCORE_RING_SIZE = 136;
 const SCORE_STROKE = 8;
 const SCORE_RADIUS = (SCORE_RING_SIZE - SCORE_STROKE) / 2;
 const SCORE_CIRCUMFERENCE = 2 * Math.PI * SCORE_RADIUS;
 
-function getTierMessage(percent: number): string {
+function getTierMessage(percent) {
   if (percent === 100) return 'Perfect!';
   if (percent >= 75) return 'Great job';
   if (percent >= 50) return 'Good effort';
   return 'Keep practising';
 }
 
-async function copyTextWithFallback(text: string): Promise<boolean> {
+async function copyTextWithFallback(text) {
   if (
     typeof navigator !== 'undefined' &&
     navigator.clipboard &&
@@ -62,7 +51,7 @@ export function ResultsSummary({
   onPlayAgain,
   onRetryWrong,
   onNotify,
-}: ResultsSummaryProps) {
+}) {
   const totalCount = answers.length;
   const correctCount = answers.filter((a) => a.outcome === 'correct').length;
   const wrongCount = answers.filter((a) => a.outcome === 'wrong').length;
@@ -74,7 +63,7 @@ export function ResultsSummary({
 
   const [ringAnimated, setRingAnimated] = useState(false);
   const [copied, setCopied] = useState(false);
-  const copyTimerRef = useRef<number | null>(null);
+  const copyTimerRef = useRef(null);
 
   useEffect(() => {
     const rafId = window.requestAnimationFrame(() => {

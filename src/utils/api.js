@@ -1,9 +1,3 @@
-import type {
-  DifficultyOption,
-  QuizErrorCode,
-  QuizErrorInfo,
-  QuizQuestion,
-} from '../types/quiz';
 import {
   DEFAULT_QUESTION_AMOUNT,
   FALLBACK_QUESTION_AMOUNTS,
@@ -12,32 +6,15 @@ import {
 import { decodeHtml } from './decodeHtml';
 import { shuffle } from './shuffle';
 
-interface OpenTriviaRawQuestion {
-  category: string;
-  type: string;
-  difficulty: string;
-  question: string;
-  correct_answer: string;
-  incorrect_answers: string[];
-}
-
-interface OpenTriviaResponse {
-  response_code: number;
-  results: OpenTriviaRawQuestion[];
-}
-
 export class TriviaApiError extends Error {
-  readonly code: QuizErrorCode;
-  readonly retryAfterSeconds?: number;
-
-  constructor(info: QuizErrorInfo) {
+  constructor(info) {
     super(info.message);
     this.name = 'TriviaApiError';
     this.code = info.code;
     this.retryAfterSeconds = info.retryAfterSeconds;
   }
 
-  toErrorInfo(): QuizErrorInfo {
+  toErrorInfo() {
     return {
       code: this.code,
       message: this.message,
@@ -46,11 +23,7 @@ export class TriviaApiError extends Error {
   }
 }
 
-function buildTriviaUrl(
-  amount: number,
-  categoryId: number | null,
-  difficulty: DifficultyOption
-): string {
+function buildTriviaUrl(amount, categoryId, difficulty) {
   const params = new URLSearchParams({
     amount: String(amount),
     type: 'multiple',
@@ -67,10 +40,7 @@ function buildTriviaUrl(
   return `https://opentdb.com/api.php?${params.toString()}`;
 }
 
-function normalizeQuestion(
-  raw: OpenTriviaRawQuestion,
-  index: number
-): QuizQuestion {
+function normalizeQuestion(raw, index) {
   const question = decodeHtml(raw.question);
   const correct = decodeHtml(raw.correct_answer);
   const incorrect = raw.incorrect_answers.map(decodeHtml);
@@ -85,14 +55,9 @@ function normalizeQuestion(
   };
 }
 
-async function fetchBatch(
-  amount: number,
-  categoryId: number | null,
-  difficulty: DifficultyOption,
-  signal?: AbortSignal
-): Promise<OpenTriviaResponse> {
+async function fetchBatch(amount, categoryId, difficulty, signal) {
   const url = buildTriviaUrl(amount, categoryId, difficulty);
-  let response: Response;
+  let response;
 
   try {
     response = await fetch(url, { signal });
@@ -122,30 +87,27 @@ async function fetchBatch(
     });
   }
 
-  let data: OpenTriviaResponse;
   try {
-    data = (await response.json()) as OpenTriviaResponse;
+    return await response.json();
   } catch {
     throw new TriviaApiError({
       code: 'UNKNOWN',
       message: 'Received an unexpected response from the trivia server.',
     });
   }
-
-  return data;
 }
 
-export async function fetchTriviaQuestions(
-  categoryId: number | null,
-  difficulty: DifficultyOption,
-  signal?: AbortSignal
-): Promise<QuizQuestion[]> {
+export async function fetchTriviaQuestions(categoryId, difficulty, signal) {
   const amountsToTry = [DEFAULT_QUESTION_AMOUNT, ...FALLBACK_QUESTION_AMOUNTS];
 
   for (const amount of amountsToTry) {
     const data = await fetchBatch(amount, categoryId, difficulty, signal);
 
-    if (data.response_code === 0 && Array.isArray(data.results) && data.results.length > 0) {
+    if (
+      data.response_code === 0 &&
+      Array.isArray(data.results) &&
+      data.results.length > 0
+    ) {
       return data.results.map(normalizeQuestion);
     }
 
@@ -158,7 +120,6 @@ export async function fetchTriviaQuestions(
     }
 
     if (data.response_code === 1) {
-      // Not enough questions for this amount; loop continues with a smaller amount.
       continue;
     }
 

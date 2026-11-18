@@ -1,13 +1,3 @@
-interface AnswerOptionProps {
-  index: number;
-  label: string;
-  isSelected: boolean;
-  isCorrect: boolean;
-  showFeedback: boolean;
-  locked: boolean;
-  onSelect: (option: string) => void;
-}
-
 export function AnswerOption({
   index,
   label,
@@ -16,7 +6,7 @@ export function AnswerOption({
   showFeedback,
   locked,
   onSelect,
-}: AnswerOptionProps) {
+}) {
   let stateClass = '';
   let rightIcon = 'fa-solid fa-chevron-right';
 

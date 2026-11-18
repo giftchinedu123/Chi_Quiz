@@ -1,14 +1,6 @@
-import type { QuizAnswerRecord, QuizQuestion } from '../types/quiz';
-import { AnswerOption } from './AnswerOption';
+import { AnswerOption } from './AnswerOption.jsx';
 
-interface QuestionCardProps {
-  question: QuizQuestion;
-  showFeedback: boolean;
-  answerRecord: QuizAnswerRecord | null;
-  onSelectOption: (option: string) => void;
-}
-
-function formatDifficulty(diff: string): string {
+function formatDifficulty(diff) {
   if (!diff) return '';
   return diff.charAt(0).toUpperCase() + diff.slice(1);
 }
@@ -18,7 +10,7 @@ export function QuestionCard({
   showFeedback,
   answerRecord,
   onSelectOption,
-}: QuestionCardProps) {
+}) {
   return (
     <div className="question-card">
       <div className="question-tags">

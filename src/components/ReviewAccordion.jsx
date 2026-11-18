@@ -1,14 +1,9 @@
 import { useState } from 'react';
-import type { QuizAnswerRecord } from '../types/quiz';
 
-interface ReviewAccordionProps {
-  answers: QuizAnswerRecord[];
-}
+export function ReviewAccordion({ answers }) {
+  const [openIndex, setOpenIndex] = useState(null);
 
-export function ReviewAccordion({ answers }: ReviewAccordionProps) {
-  const [openIndex, setOpenIndex] = useState<number | null>(null);
-
-  const toggleRow = (index: number) => {
+  const toggleRow = (index) => {
     setOpenIndex((prev) => (prev === index ? null : index));
   };
 

@@ -1,8 +1,4 @@
-interface ToastProps {
-  message: string | null;
-}
-
-export function Toast({ message }: ToastProps) {
+export function Toast({ message }) {
   if (!message) return null;
 
   return (

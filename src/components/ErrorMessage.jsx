@@ -1,20 +1,13 @@
 import { useEffect, useState } from 'react';
-import type { QuizErrorInfo } from '../types/quiz';
 import { RATE_LIMIT_COOLDOWN_SECONDS } from '../utils/constants';
 
-interface ErrorMessageProps {
-  error: QuizErrorInfo;
-  onRetry: () => void;
-  onBack: () => void;
-}
-
-export function ErrorMessage({ error, onRetry, onBack }: ErrorMessageProps) {
+export function ErrorMessage({ error, onRetry, onBack }) {
   const initialCooldown =
     error.code === 'RATE_LIMIT'
       ? error.retryAfterSeconds ?? RATE_LIMIT_COOLDOWN_SECONDS
       : 0;
 
-  const [cooldown, setCooldown] = useState<number>(initialCooldown);
+  const [cooldown, setCooldown] = useState(initialCooldown);
 
   useEffect(() => {
     setCooldown(initialCooldown);

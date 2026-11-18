@@ -1,28 +1,23 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { CategoryPicker } from '../components/CategoryPicker';
-import { DifficultyPicker } from '../components/DifficultyPicker';
-import { ErrorMessage } from '../components/ErrorMessage';
-import { FeedbackBar } from '../components/FeedbackBar';
-import { Loader } from '../components/Loader';
-import { ProgressBar } from '../components/ProgressBar';
-import { QuestionCard } from '../components/QuestionCard';
-import { ResultsSummary } from '../components/ResultsSummary';
-import { ReviewAccordion } from '../components/ReviewAccordion';
-import { TimerRing } from '../components/TimerRing';
-import { Toast } from '../components/Toast';
+import { CategoryPicker } from '../components/CategoryPicker.jsx';
+import { DifficultyPicker } from '../components/DifficultyPicker.jsx';
+import { ErrorMessage } from '../components/ErrorMessage.jsx';
+import { FeedbackBar } from '../components/FeedbackBar.jsx';
+import { Loader } from '../components/Loader.jsx';
+import { ProgressBar } from '../components/ProgressBar.jsx';
+import { QuestionCard } from '../components/QuestionCard.jsx';
+import { ResultsSummary } from '../components/ResultsSummary.jsx';
+import { ReviewAccordion } from '../components/ReviewAccordion.jsx';
+import { TimerRing } from '../components/TimerRing.jsx';
+import { Toast } from '../components/Toast.jsx';
 import { useLocalStorage } from '../hooks/useLocalStorage';
 import { useQuiz } from '../hooks/useQuiz';
-import type { CustomQuiz } from '../types/quiz';
 import {
   CATEGORIES,
   CUSTOM_QUIZZES_STORAGE_KEY,
   DIFFICULTIES,
 } from '../utils/constants';
-
-interface QuizLocationState {
-  customQuizId?: string;
-}
 
 export function Quiz() {
   const location = useLocation();
@@ -44,17 +39,17 @@ export function Quiz() {
     resetQuiz,
   } = useQuiz();
 
-  const [customQuizzes, setCustomQuizzes] = useLocalStorage<CustomQuiz[]>(
+  const [customQuizzes, setCustomQuizzes] = useLocalStorage(
     CUSTOM_QUIZZES_STORAGE_KEY,
     []
   );
 
   const [confirmingQuit, setConfirmingQuit] = useState(false);
-  const [toastMessage, setToastMessage] = useState<string | null>(null);
-  const toastTimerRef = useRef<number | null>(null);
+  const [toastMessage, setToastMessage] = useState(null);
+  const toastTimerRef = useRef(null);
   const handledRouteQuizRef = useRef(false);
 
-  const showToast = useCallback((message: string) => {
+  const showToast = useCallback((message) => {
     setToastMessage(message);
     if (toastTimerRef.current !== null) {
       window.clearTimeout(toastTimerRef.current);
@@ -73,11 +68,9 @@ export function Quiz() {
     };
   }, []);
 
-  // Support launching a saved custom quiz directly from /builder
   useEffect(() => {
     if (handledRouteQuizRef.current) return;
-    const routeState = location.state as QuizLocationState | null;
-    const targetId = routeState?.customQuizId;
+    const targetId = location.state?.customQuizId;
     if (!targetId) return;
 
     handledRouteQuizRef.current = true;
@@ -88,12 +81,11 @@ export function Quiz() {
     navigate('/quiz', { replace: true, state: null });
   }, [customQuizzes, location.state, navigate, startCustomQuiz]);
 
-  // Clear inline quit confirmation whenever question or status changes
   useEffect(() => {
     setConfirmingQuit(false);
   }, [state.status, state.currentIndex]);
 
-  const handleDeleteCustomQuiz = (id: string) => {
+  const handleDeleteCustomQuiz = (id) => {
     setCustomQuizzes((prev) => prev.filter((q) => q.id !== id));
     showToast('Quiz deleted');
   };

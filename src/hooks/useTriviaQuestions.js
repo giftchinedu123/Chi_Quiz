@@ -1,18 +1,8 @@
 import { useCallback, useEffect, useRef } from 'react';
-import type {
-  DifficultyOption,
-  QuizErrorInfo,
-  QuizQuestion,
-} from '../types/quiz';
 import { fetchTriviaQuestions, TriviaApiError } from '../utils/api';
 
-interface LoadCallbacks {
-  onSuccess: (questions: QuizQuestion[]) => void;
-  onError: (error: QuizErrorInfo) => void;
-}
-
 export function useTriviaQuestions() {
-  const abortControllerRef = useRef<AbortController | null>(null);
+  const abortControllerRef = useRef(null);
 
   const cancel = useCallback(() => {
     if (abortControllerRef.current) {
@@ -28,11 +18,7 @@ export function useTriviaQuestions() {
   }, [cancel]);
 
   const loadQuestions = useCallback(
-    async (
-      categoryId: number | null,
-      difficulty: DifficultyOption,
-      { onSuccess, onError }: LoadCallbacks
-    ) => {
+    async (categoryId, difficulty, { onSuccess, onError }) => {
       cancel();
       const controller = new AbortController();
       abortControllerRef.current = controller;
@@ -58,7 +44,8 @@ export function useTriviaQuestions() {
         } else {
           onError({
             code: 'UNKNOWN',
-            message: 'Something went wrong while loading questions. Please try again.',
+            message:
+              'Something went wrong while loading questions. Please try again.',
           });
         }
       } finally {

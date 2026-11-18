@@ -1,16 +1,4 @@
-import type { AnswerOutcome } from '../types/quiz';
-
-interface FeedbackBarProps {
-  outcome: AnswerOutcome;
-  isLastQuestion: boolean;
-  onNext: () => void;
-}
-
-export function FeedbackBar({
-  outcome,
-  isLastQuestion,
-  onNext,
-}: FeedbackBarProps) {
+export function FeedbackBar({ outcome, isLastQuestion, onNext }) {
   const config =
     outcome === 'correct'
       ? {
