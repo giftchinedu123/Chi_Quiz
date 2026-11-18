@@ -1,6 +1,3 @@
-/**
- * Fisher-Yates shuffle returning a new array without mutating the input.
- */
 export function shuffle(items) {
   const copy = [...items];
   for (let i = copy.length - 1; i > 0; i--) {

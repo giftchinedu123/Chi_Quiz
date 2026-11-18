@@ -1,6 +1,3 @@
-/**
- * Safely decodes HTML entities returned by Open Trivia DB without using dangerouslySetInnerHTML.
- */
 export function decodeHtml(encoded) {
   if (!encoded) return '';
   if (typeof DOMParser !== 'undefined') {

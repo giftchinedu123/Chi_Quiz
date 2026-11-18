@@ -25,7 +25,6 @@ export function useLocalStorage(key, initialValue) {
             window.localStorage.setItem(key, JSON.stringify(nextValue));
           }
         } catch {
-          // Ignore storage quota / private mode write errors gracefully
         }
         return nextValue;
       });
