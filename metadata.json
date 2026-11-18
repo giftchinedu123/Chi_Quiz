@@ -1,0 +1,6 @@
+{
+  "name": "Quiz by Gift",
+  "description": "A dark-themed interactive quiz app powered by Open Trivia DB with a custom teacher quiz builder.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
